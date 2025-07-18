@@ -14,12 +14,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-!2nszdij8sl0oljn=f)wd2uowab_ae@mm))r0=6#si8ozke&sy'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
     "learnifypakistan.com",
     "www.learnifypakistan.com",
-    "your_droplet_ip",  # Add this later after droplet is created
+    "your_droplet_ip",  # Replace this with actual IP when deploying
 ]
 
 
