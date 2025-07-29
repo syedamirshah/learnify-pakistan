@@ -21,7 +21,8 @@ ALLOWED_HOSTS = [
     "localhost",
     "learnifypakistan.com",
     "www.learnifypakistan.com",
-    "your_droplet_ip",  # Replace this with actual IP when deploying
+    "learnify-backend-6nta.onrender.com",  # Render backend
+    "your_droplet_ip",  # Replace with actual IP when deploying
 ]
 
 
