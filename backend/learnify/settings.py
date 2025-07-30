@@ -185,6 +185,7 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "https://learnify-frontend-e282.onrender.com",
 ]
 
 MIDDLEWARE += [
