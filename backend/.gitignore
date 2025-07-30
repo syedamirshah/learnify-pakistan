@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.egg-info/
+*.egg
+*.env
+*.venv
+env/
+venv/
+
+# Django stuff
+db.sqlite3
+media/
+staticfiles/
+local_settings.py
+
+# MacOS system files
+.DS_Store
+
+# VS Code and other IDE files
+.vscode/
+.idea/
+
+# Render build logs
+build.log
+
+# Node/npm junk (not used here)
+package-lock.json
+package.json
+
+# Backup or temp files
+*.bak
+*.tmp
+*.swp
