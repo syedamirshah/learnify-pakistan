@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import logo from "../../assets/logo.png";
 import "../../App.css";
-import axios from 'axios';
+import axiosInstance from '../../utils/axiosInstance';
 import { Link, useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
@@ -33,12 +33,12 @@ const LandingPage = () => {
 
   // Fetch quiz data from backend and log it
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/landing/quizzes/')
-        .then(res => {
-            console.log("Ô£ø√º√¨¬∂ Quiz API Response:", res.data);  // ‚Äö√∫√ñ Right place to log
+        axiosInstance.get('landing/quizzes/')
+          .then(res => {
+            console.log("📊 Quiz API Response:", res.data);
             setQuizData(res.data);
-        })
-        .catch(err => console.error("‚Äö√π√• Error fetching quizzes:", err));
+          })
+          .catch(err => console.error("❌ Error fetching quizzes:", err));
     }, []);
 
   const handleLogin = async () => {
