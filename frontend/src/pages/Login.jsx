@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axiosInstance from '../utils/axiosInstance';
 import logo from "../assets/logo.png";
 
 const Login = () => {
@@ -8,7 +8,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post('http://127.0.0.1:8000/api/token/', {
+      const res = await axiosInstance.post('token/', {
         username,
         password,
       });
@@ -32,7 +32,7 @@ const Login = () => {
         return;
       }
 
-      const userRes = await axios.get('http://127.0.0.1:8000/api/user/me/', {
+      const userRes = await axiosInstance.get('user/me/');
         headers: { Authorization: `Bearer ${access}` },
       });
 
