@@ -43,7 +43,7 @@ const LandingPage = () => {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post('http://127.0.0.1:8000/api/token/', {
+      const res = await axiosInstance.post('token/', {
         username,
         password,
       });
@@ -53,12 +53,11 @@ const LandingPage = () => {
       localStorage.setItem('account_status', res.data.account_status);
       localStorage.setItem('role', res.data.role);
 
-      const me = await axios.get('http://127.0.0.1:8000/api/user/me/', {
+      const me = await axiosInstance.get('user/me/', {
         headers: {
           Authorization: `Bearer ${res.data.access}`,
         },
       });
-
       const role = me.data.role;
       const fullName = me.data.full_name || me.data.username;
       const status = me.data.account_status;
