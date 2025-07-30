@@ -13,7 +13,8 @@ const StudentQuizHistoryTable = () => {
       try {
         const token = localStorage.getItem('access_token');
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
-        const res = await axios.get('/api/student/quiz-history/', { headers });
+        const baseURL = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || '';
+        const res = await axios.get(`${baseURL}/student/quiz-history/`, { headers });
 
         setQuizResults(res.data.results || []);
         setStudentName(res.data.full_name || '');
