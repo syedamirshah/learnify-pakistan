@@ -32,10 +32,9 @@ const Login = () => {
         return;
       }
 
-      const userRes = await axiosInstance.get('user/me/');
+      const userRes = await axiosInstance.get('user/me/', {
         headers: { Authorization: `Bearer ${access}` },
       });
-
       const userData = userRes.data;
       const status = userData.account_status;
       const role = userData.role;
