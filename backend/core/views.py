@@ -1467,17 +1467,16 @@ def student_quiz_history_view(request):
     from django.db.models import Max
     from django.utils.timezone import localtime
 
-    # Step 1: Get latest attempt per quiz
-    latest_attempt_ids = StudentQuizAttempt.objects.filter(
-        student=student,
-        completed_at__isnull=False
-    ).values('quiz').annotate(latest=Max('completed_at')).values_list('latest', flat=True)
+    # ✅ Step 1: Get latest attempt ID per quiz
+    latest_attempts = (
+        StudentQuizAttempt.objects.filter(student=student, completed_at__isnull=False)
+        .values('quiz')
+        .annotate(latest_id=Max('id'))
+        .values_list('latest_id', flat=True)
+    )
 
-    # Step 2: Fetch only those latest attempts
-    attempts = StudentQuizAttempt.objects.filter(
-        student=student,
-        completed_at__in=latest_attempt_ids
-    ).order_by('-completed_at')
+    # ✅ Step 2: Fetch only those attempts by ID
+    attempts = StudentQuizAttempt.objects.filter(id__in=latest_attempts).order_by('-completed_at')
 
     results = []
     for attempt in attempts:
@@ -1500,6 +1499,11 @@ def student_quiz_history_view(request):
             'attempted_on': localtime(attempt.completed_at, timezone=pk_timezone).strftime('%d-%m-%Y %I:%M %p'),
             'attempt_id': str(attempt.id)
         })
+
+    return Response({
+        'full_name': student.full_name,
+        'results': results
+    })
 
     return Response({
         'full_name': student.full_name,
