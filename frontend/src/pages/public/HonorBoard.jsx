@@ -9,16 +9,25 @@ const HonorBoard = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchWithFallback = async (url1, url2) => {
-    const token = localStorage.getItem('access');
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
-    try {
-      const res = await axios.get(url1, { headers });
+  const token = localStorage.getItem('access');
+  const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+  try {
+    const res = await axios.get(url1, { headers });
+    if (Array.isArray(res.data)) {
       return res.data;
-    } catch {
-      const fallbackRes = await axios.get(url2, { headers });
-      return fallbackRes.data;
+    } else {
+      throw new Error('Invalid data format from API');
     }
-  };
+  } catch {
+    const fallbackRes = await axios.get(url2, { headers });
+    if (Array.isArray(fallbackRes.data)) {
+      return fallbackRes.data;
+    } else {
+      throw new Error('Invalid data format from fallback URL');
+    }
+  }
+};
 
   useEffect(() => {
     const fetchHonorData = async () => {
