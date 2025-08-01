@@ -1,8 +1,11 @@
-// src/utils/axiosInstance.js
-
 import axios from 'axios';
 
-const baseURL = import.meta.env.VITE_API_BASE_URL;
+let baseURL = import.meta.env.VITE_API_BASE_URL;
+
+// ✅ Remove trailing slash if present
+if (baseURL.endsWith('/')) {
+  baseURL = baseURL.slice(0, -1);
+}
 
 const axiosInstance = axios.create({
   baseURL: baseURL,
