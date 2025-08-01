@@ -45,7 +45,7 @@ const HonorBoard = () => {
       {data.length === 0 ? (
         <p className="text-center text-green-500">No data available.</p>
       ) : (
-        data.map((group, index) => (
+        (data || []).map((group, index) => (
           <div
             key={index}
             className="bg-green-50 border border-green-300 rounded-xl shadow-sm p-4 mb-6"
