@@ -42,10 +42,12 @@ const HonorBoard = () => {
   const renderTable = (title, data) => (
     <div className="mb-12">
       <h2 className="text-xl font-semibold text-center mb-4">{title}</h2>
-      {data.length === 0 ? (
+      {!Array.isArray(data) ? (
+        <p className="text-center text-red-500">Invalid data format received.</p>
+      ) : data.length === 0 ? (
         <p className="text-center text-green-500">No data available.</p>
       ) : (
-        (data || []).map((group, index) => (
+        data.map((group, index) => (
           <div
             key={index}
             className="bg-green-50 border border-green-300 rounded-xl shadow-sm p-4 mb-6"
