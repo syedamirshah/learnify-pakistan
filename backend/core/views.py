@@ -1463,23 +1463,26 @@ def student_quiz_history_view(request):
         return Response({'error': 'Only students can access this view.'}, status=403)
 
     student = request.user
-
-    from django.db.models import Max
     from django.utils.timezone import localtime
 
-    # ✅ Step 1: Get latest attempt ID per quiz
-    latest_attempts = (
-        StudentQuizAttempt.objects.filter(student=student, completed_at__isnull=False)
-        .values('quiz')
-        .annotate(latest_id=Max('id'))
-        .values_list('latest_id', flat=True)
-    )
+    # ✅ Step 1: Get all completed attempts
+    all_attempts = StudentQuizAttempt.objects.filter(
+        student=student,
+        completed_at__isnull=False
+    ).order_by('quiz_id', '-completed_at')  # So latest comes first for each quiz
 
-    # ✅ Step 2: Fetch only those attempts by ID
-    attempts = StudentQuizAttempt.objects.filter(id__in=latest_attempts).order_by('-completed_at')
+    # ✅ Step 2: Pick latest attempt per quiz
+    seen_quizzes = set()
+    latest_attempts = []
 
+    for attempt in all_attempts:
+        if attempt.quiz_id not in seen_quizzes:
+            latest_attempts.append(attempt)
+            seen_quizzes.add(attempt.quiz_id)
+
+    # ✅ Step 3: Build results
     results = []
-    for attempt in attempts:
+    for attempt in latest_attempts:
         quiz = attempt.quiz
         total_questions = quiz.assignments.aggregate(total=models.Sum('num_questions'))['total'] or 0
         total_marks = total_questions * quiz.marks_per_question
@@ -1504,7 +1507,6 @@ def student_quiz_history_view(request):
         'full_name': student.full_name,
         'results': results
     })
-
     return Response({
         'full_name': student.full_name,
         'results': results
