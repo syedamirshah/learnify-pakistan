@@ -27,6 +27,15 @@ ALLOWED_HOSTS = [
 ]
 
 
+# ✅ NEW — Secure proxy handling for Render
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# ✅ NEW — CSRF protection for custom domains
+CSRF_TRUSTED_ORIGINS = [
+    "https://learnify-frontend-e282.onrender.com",
+]
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -49,12 +58,16 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # ✅ keep this only once
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+]
+
+MIDDLEWARE += [
+    'core.middleware.AutoExpireUserMiddleware',
 ]
 
 ROOT_URLCONF = 'learnify.urls'
@@ -79,8 +92,6 @@ WSGI_APPLICATION = 'learnify.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///db.sqlite3',
@@ -91,8 +102,6 @@ DATABASES = {
 
 
 # Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -110,36 +119,25 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
+# Static files
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
-# CKEditor settings
-CKEDITOR_UPLOAD_PATH = "uploads/"
+# Media files
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-AUTH_USER_MODEL = 'core.User'
-
+# CKEditor settings
+CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'custom',
@@ -154,8 +152,8 @@ CKEDITOR_CONFIGS = {
             ['Source', 'Maximize'],
         ],
         'extraPlugins': ','.join([
-            'image2',           # ‚Äö√∫√ñ Enables drag-to-resize for images
-            'embed',            # ‚Äö√∫√ñ YouTube embedding
+            'image2',
+            'embed',
             'embedsemantic',
             'autoembed',
             'clipboard',
@@ -164,16 +162,19 @@ CKEDITOR_CONFIGS = {
             'lineutils',
             'widget',
         ]),
-        'removePlugins': 'image',  # ‚Äö√∫√ñ Removes default plugin to avoid conflict with image2
-
-        # ‚Äö√∫√ñ Enables file uploads and browser dialogs
+        'removePlugins': 'image',
         'filebrowserUploadUrl': "/ckeditor/upload/",
         'filebrowserBrowseUrl': "/ckeditor/browse/",
     }
 }
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Custom user model
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'core.User'
+
+
+# REST & JWT
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -185,27 +186,25 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
+
+# CORS
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://learnify-frontend-e282.onrender.com",
 ]
 
-MIDDLEWARE += [
-    'core.middleware.AutoExpireUserMiddleware',
-]
 
-# ‚úÖ Gmail SMTP Email Settings
+# Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
-EMAIL_HOST_USER = 'polscience.uob@gmail.com'  # ‚úÖ Your Gmail address
-EMAIL_HOST_PASSWORD = 'fykonmbfkkuhcccn'  # ‚úÖ Paste app password (no spaces)
+EMAIL_HOST_USER = 'polscience.uob@gmail.com'
+EMAIL_HOST_PASSWORD = 'fykonmbfkkuhcccn'
 DEFAULT_FROM_EMAIL = 'Learnify Pakistan <polscience.uob@gmail.com>'
 
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/admin/'  # This will land you on your backend main dashboard
-LOGOUT_REDIRECT_URL = '/login/'
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Login redirects
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/admin/'
+LOGOUT_REDIRECT_URL = '/login/'
