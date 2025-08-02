@@ -118,7 +118,7 @@ urlpatterns = [
 
     path('api/student/subject-performance/', student_subject_performance, name='student-subject-performance'),
 
-    path('api/student/quiz-history/', student_quiz_history_view, name='student_quiz_history'),
+    path('student/quiz-history/', student_quiz_history_view, name='student_quiz_history')
 
     path('login/', LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),
